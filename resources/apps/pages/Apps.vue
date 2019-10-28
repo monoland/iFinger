@@ -14,7 +14,7 @@
                                 </v-system-bar>
                                 <v-card-text class="cyan lighten-4">
                                     <v-row no-gutters>
-                                        <v-col class="pr-4" cols="11">
+                                        <v-col class="pr-4" sm="12" md="11">
                                             <v-combobox
                                                 :items="events"
                                                 label="Pilih Event/Tanggal Apel"
@@ -22,7 +22,7 @@
                                             ></v-combobox>
                                         </v-col>
 
-                                        <v-col class="d-flex align-center" cols="1">
+                                        <v-col class="d-flex align-center" sm="12" md="1">
                                             <v-btn color="cyan" dark @click="fetchRecaps">proses</v-btn>
                                         </v-col>
                                     </v-row>
@@ -33,7 +33,7 @@
 
                     <v-row>
                         <!-- tepat waktu -->
-                        <v-col cols="3">
+                        <v-col sm="12" md="3">
                             <v-hover>
                                 <template v-slot:default="{ hover }">
                                     <v-card flat>
@@ -61,7 +61,7 @@
                         </v-col>
 
                         <!-- terlambat -->
-                        <v-col cols="3">
+                        <v-col sm="12" md="3">
                             <v-hover>
                                 <template v-slot:default="{ hover }">
                                     <v-card flat>
@@ -89,7 +89,7 @@
                         </v-col>
 
                         <!-- dengan keterangan -->
-                        <v-col cols="3">
+                        <v-col sm="12" md="3">
                             <v-hover>
                                 <template v-slot:default="{ hover }">
                                     <v-card flat>
@@ -117,7 +117,7 @@
                         </v-col>
 
                         <!-- tanpa keterangan -->
-                        <v-col cols="3">
+                        <v-col sm="12" md="3">
                             <v-hover>
                                 <template v-slot:default="{ hover }">
                                     <v-card flat>
@@ -146,7 +146,7 @@
                     </v-row>
 
                     <v-row>
-                        <v-col cols="6">
+                        <v-col sm="12" md="6">
                             <v-card height="100%" flat>
                                 <v-system-bar color="cyan">
                                     <div class="overline px-2 white--text">graphic kehadiran</div>
@@ -158,7 +158,7 @@
                             </v-card>    
                         </v-col>
 
-                        <v-col cols="6">
+                        <v-col sm="12" md="6">
                             <v-card flat>
                                 <v-system-bar color="cyan">
                                     <div class="overline px-2 white--text">tidak hadir dengan keterangan</div>
