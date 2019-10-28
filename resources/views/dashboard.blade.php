@@ -6,8 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dashboard Apel</title>
-    <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="/styles/monoland.css">
+    <link rel="manifest" href="/dashboard/manifest.json">
+    <link rel="stylesheet" href="/dashboard/styles/monoland.css">
 </head>
 
 <style>
@@ -38,8 +38,8 @@
         </div>
     </noscript>
 
-    <script src="/scripts/manifest.js"></script>
-    <script src="/scripts/vendor.js"></script>
-    <script src="/scripts/monoland.js"></script>
+    <script src="/dashboard/scripts/manifest.js"></script>
+    <script src="/dashboard/scripts/vendor.js"></script>
+    <script src="/dashboard/scripts/monoland.js"></script>
 </body>
 </html>
