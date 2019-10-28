@@ -183,7 +183,7 @@ export default {
         event: null,
         events: [],
         fontLoaded: false,
-        urlpath: '/api',
+        urlpath: '/dashboard/api',
 
         dataTable1: [],
         headTable1: [
