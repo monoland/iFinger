@@ -78,6 +78,30 @@ class CeremonyController extends Controller
      */
     public function participants(Request $request, $date)
     {
-        // 
+        $participants = implode(',', array_column($request->participants, 'nip'));
+
+        return response()->json([
+            'agencies' => DB::connection('simpeg')
+                ->select("SELECT ref_unkerja.nunker AS unker, COUNT(peg_tkerja.nip) AS count FROM peg_tkerja
+                    LEFT JOIN ref_unkerja ON CONCAT(peg_tkerja.kuntp,peg_tkerja.kunkom,'00000000000') = ref_unkerja.kunker
+                    WHERE peg_tkerja.nip IN ($participants)
+                    GROUP BY ref_unkerja.nunker"),
+            
+            'participants' => DB::connection('simpeg')
+                ->select("SELECT 
+                    peg_identpeg.nip, 
+                    CONCAT(IF(gldepan IS NULL or gldepan = '', '', CONCAT(gldepan, '. ')), nama, IF(glblk IS NULL or glblk = '', '', CONCAT(', ', glblk))) AS nama, 
+                    ref_golruang.ngolru AS gol,
+                    peg_jakhir.njab AS jabatan,
+                    ref_eselon.neselon AS esl,
+                    ref_unkerja.nunker AS unker
+                FROM peg_identpeg
+                JOIN peg_pakhir ON peg_identpeg.nip = peg_pakhir.nip
+                JOIN peg_jakhir ON peg_identpeg.nip = peg_jakhir.nip
+                JOIN ref_golruang ON peg_pakhir.kgolru = ref_golruang.kgolru
+                JOIN ref_eselon ON peg_jakhir.keselon = ref_eselon.keselon
+                JOIN ref_unkerja ON CONCAT(LEFT(peg_jakhir.kunker, 4), '00000000000') = ref_unkerja.kunker
+                WHERE peg_identpeg.nip IN ($participants)")
+        ], 200);
     }
 }

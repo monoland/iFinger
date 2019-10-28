@@ -34,74 +34,114 @@
                     <v-row>
                         <!-- tepat waktu -->
                         <v-col cols="3">
-                            <v-card flat>
-                                <v-system-bar color="light-blue">
-                                    <div class="overline px-2 white--text">hadir</div>
-                                </v-system-bar>
+                            <v-hover>
+                                <template v-slot:default="{ hover }">
+                                    <v-card flat>
+                                        <v-system-bar color="light-blue">
+                                            <div class="overline px-2 white--text">hadir</div>
+                                        </v-system-bar>
 
-                                <v-card-text class="light-blue lighten-2">
-                                    <div class="d-flex justify-center display-4 font-weight-bold white--text">{{ count.present }}</div>
-                                </v-card-text>
-                                <v-card-text class="d-flex py-2 align-center light-blue lighten-3">
-                                    <div class="body-2 text-uppercase font-weight-bold white--text">tepat waktu</div>
-                                    <v-spacer></v-spacer>
-                                    <div class="title white--text">{{ ((count.present / count.total) * 100).toFixed(2) + '%' }}</div>
-                                </v-card-text>
-                            </v-card>    
+                                        <v-card-text class="light-blue lighten-2">
+                                            <div class="d-flex justify-center display-4 font-weight-bold white--text">{{ count.present }}</div>
+                                        </v-card-text>
+                                        <v-card-text class="d-flex py-2 align-center light-blue lighten-3">
+                                            <div class="body-2 text-uppercase font-weight-bold white--text">tepat waktu</div>
+                                            <v-spacer></v-spacer>
+                                            <div class="title white--text">{{ count.total > 0 ? ((count.present / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</div>
+                                        </v-card-text>
+
+                                        <v-fade-transition>
+                                            <v-overlay absolute color="light-blue" v-if="hover && count.total > 0">
+                                                <v-btn color="light-blue darken-3" dark @click="fetchDetail('present')">lihat detail</v-btn>
+                                            </v-overlay>
+                                        </v-fade-transition>
+                                    </v-card>
+                                </template>
+                            </v-hover>
                         </v-col>
 
                         <!-- terlambat -->
                         <v-col cols="3">
-                            <v-card flat>
-                                <v-system-bar color="cyan">
-                                    <div class="overline px-2 white--text">hadir</div>
-                                </v-system-bar>
+                            <v-hover>
+                                <template v-slot:default="{ hover }">
+                                    <v-card flat>
+                                        <v-system-bar color="cyan">
+                                            <div class="overline px-2 white--text">hadir</div>
+                                        </v-system-bar>
 
-                                <v-card-text class="cyan lighten-2">
-                                    <div class="d-flex justify-center display-4 font-weight-bold white--text">{{ count.late }}</div>
-                                </v-card-text>
-                                <v-card-text class="d-flex py-2 align-center cyan lighten-3">
-                                    <div class="body-2 text-uppercase font-weight-bold white--text">terlambat</div>
-                                    <v-spacer></v-spacer>
-                                    <div class="title white--text">{{ ((count.late / count.total) * 100).toFixed(2) + '%' }}</div>
-                                </v-card-text>
-                            </v-card>    
+                                        <v-card-text class="cyan lighten-2">
+                                            <div class="d-flex justify-center display-4 font-weight-bold white--text">{{ count.late }}</div>
+                                        </v-card-text>
+                                        <v-card-text class="d-flex py-2 align-center cyan lighten-3">
+                                            <div class="body-2 text-uppercase font-weight-bold white--text">terlambat</div>
+                                            <v-spacer></v-spacer>
+                                            <div class="title white--text">{{ count.total > 0 ? ((count.late / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</div>
+                                        </v-card-text>
+
+                                        <v-fade-transition>
+                                            <v-overlay absolute color="cyan" v-if="hover && count.total > 0">
+                                                <v-btn color="cyan darken-3" dark @click="fetchDetail('late')">lihat detail</v-btn>
+                                            </v-overlay>
+                                        </v-fade-transition>
+                                    </v-card> 
+                                </template>
+                            </v-hover>   
                         </v-col>
 
                         <!-- dengan keterangan -->
                         <v-col cols="3">
-                            <v-card flat>
-                                <v-system-bar color="amber">
-                                    <div class="overline px-2 white--text">tidak hadir</div>
-                                </v-system-bar>
+                            <v-hover>
+                                <template v-slot:default="{ hover }">
+                                    <v-card flat>
+                                        <v-system-bar color="amber">
+                                            <div class="overline px-2 white--text">tidak hadir</div>
+                                        </v-system-bar>
 
-                                <v-card-text class="amber lighten-2">
-                                    <div class="d-flex justify-center display-4 font-weight-bold white--text">{{ count.permit }}</div>
-                                </v-card-text>
-                                <v-card-text class="d-flex py-2 align-center amber lighten-3">
-                                    <div class="body-2 text-uppercase font-weight-bold white--text">dengan keterangan</div>
-                                    <v-spacer></v-spacer>
-                                    <div class="title white--text">{{ ((count.permit / count.total) * 100).toFixed(2) + '%' }}</div>
-                                </v-card-text>
-                            </v-card>    
+                                        <v-card-text class="amber lighten-2">
+                                            <div class="d-flex justify-center display-4 font-weight-bold white--text">{{ count.permit }}</div>
+                                        </v-card-text>
+                                        <v-card-text class="d-flex py-2 align-center amber lighten-3">
+                                            <div class="body-2 text-uppercase font-weight-bold white--text">dengan keterangan</div>
+                                            <v-spacer></v-spacer>
+                                            <div class="title white--text">{{ count.total > 0 ? ((count.permit / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</div>
+                                        </v-card-text>
+
+                                        <v-fade-transition>
+                                            <v-overlay absolute color="amber" v-if="hover && count.total > 0">
+                                                <v-btn color="amber darken-3" dark @click="fetchDetail('permit')">lihat detail</v-btn>
+                                            </v-overlay>
+                                        </v-fade-transition>
+                                    </v-card>    
+                                </template>
+                            </v-hover>
                         </v-col>
 
                         <!-- tanpa keterangan -->
                         <v-col cols="3">
-                            <v-card flat>
-                                <v-system-bar color="deep-orange">
-                                    <div class="overline px-2 white--text">tidak hadir</div>
-                                </v-system-bar>
+                            <v-hover>
+                                <template v-slot:default="{ hover }">
+                                    <v-card flat>
+                                        <v-system-bar color="deep-orange">
+                                            <div class="overline px-2 white--text">tidak hadir</div>
+                                        </v-system-bar>
 
-                                <v-card-text class="deep-orange lighten-2">
-                                    <div class="d-flex justify-center display-4 font-weight-bold white--text">{{ count.walkout }}</div>
-                                </v-card-text>
-                                <v-card-text class="d-flex py-2 align-center deep-orange lighten-3">
-                                    <div class="body-2 text-uppercase font-weight-bold white--text">tanpa keterangan</div>
-                                    <v-spacer></v-spacer>
-                                    <div class="title white--text">{{ ((count.walkout / count.total) * 100).toFixed(2) + '%' }}</div>
-                                </v-card-text>
-                            </v-card>    
+                                        <v-card-text class="deep-orange lighten-2">
+                                            <div class="d-flex justify-center display-4 font-weight-bold white--text">{{ count.walkout }}</div>
+                                        </v-card-text>
+                                        <v-card-text class="d-flex py-2 align-center deep-orange lighten-3">
+                                            <div class="body-2 text-uppercase font-weight-bold white--text">tanpa keterangan</div>
+                                            <v-spacer></v-spacer>
+                                            <div class="title white--text">{{ count.total > 0 ? ((count.walkout / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</div>
+                                        </v-card-text>
+
+                                        <v-fade-transition>
+                                            <v-overlay absolute color="deep-orange" v-if="hover && count.total > 0">
+                                                <v-btn color="deep-orange darken-3" dark @click="fetchDetail('walkout')">lihat detail</v-btn>
+                                            </v-overlay>
+                                        </v-fade-transition>
+                                    </v-card>    
+                                </template>
+                            </v-hover>
                         </v-col>
                     </v-row>
 
@@ -141,6 +181,51 @@
                         </v-col>
                     </v-row>
                 </v-container>
+
+                <!-- detail -->
+                <v-dialog fullscreen transition="dialog-bottom-transition" v-model="detail.state">
+                    <v-card :color="detail.color + ' lighten-5'" flat>
+                        <v-toolbar :color="detail.color" extended flat>
+                            <v-btn icon @click="detail.state = false" dark>
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </v-toolbar>
+                        <v-container class="pa-0">
+                            <v-card class="mx-auto" style="margin-top: -64px" flat>
+                                <v-toolbar :color="detail.color + ' darken-2'" flat>
+                                    <v-toolbar-title class="text-uppercase white--text">{{ detail.title }}</v-toolbar-title>
+                                </v-toolbar>
+                                <v-divider></v-divider>
+                                <v-card-text>
+                                    <v-data-table
+                                        :expanded.sync="expanded"
+                                        :headers="headTable2"
+                                        :items="dataTable2"
+                                        item-key="unker"
+                                        :footer-props="{ itemsPerPageOptions: [-1] }"
+                                        dense 
+                                        show-expand 
+                                        single-expand
+                                        hide-default-footer
+                                    >
+                                        <template v-slot:expanded-item="{ headers }">
+                                            <td :colspan="headers.length" style="border-bottom: 0 none;">
+                                                <v-data-table
+                                                    :headers="headTable3"
+                                                    :items="dataTable3"
+                                                    :loading="waitTable3"
+                                                    :footer-props="{ itemsPerPageOptions: [-1] }"
+                                                    dense
+                                                    hide-default-footer
+                                                ></v-data-table>
+                                            </td>
+                                        </template>
+                                    </v-data-table>
+                                </v-card-text>
+                            </v-card>
+                        </v-container>
+                    </v-card>
+                </v-dialog>
             </v-content>
 
             <v-snackbar
@@ -185,6 +270,8 @@ export default {
         fontLoaded: false,
         urlpath: '/dashboard/api',
 
+        expanded: [],
+
         dataTable1: [],
         headTable1: [
             { text: 'Kode', value: 'stat_ijn', class: 'kode' },
@@ -193,10 +280,33 @@ export default {
             { text: '%', value: 'percent', align: 'end', sortable: false },
         ],
 
+        dataTable2: [],
+        headTable2: [
+            { text: 'Unit Kerja', value: 'unker' },
+            { text: 'Jumlah', value: 'count', align: 'end' },
+            { text: '', value: 'data-table-expand' },
+        ],
+
+        holdTable3: [],
+        dataTable3: [],
+        waitTable3: false,
+        headTable3: [
+            { text: 'NIP', value: 'nip', class: 'nip' },
+            { text: 'Nama Lengkap', value: 'nama' },
+            { text: 'Eselon', value: 'esl', align: 'center', class: 'eselon' },
+            { text: 'Golongan', value: 'gol', align: 'end', class: 'eselon' },
+        ],
+
         snackbar: {
             state: false,
             mode: 'error',
             message: null
+        },
+
+        detail: {
+            state: false,
+            color: 'light-blue',
+            title: null
         },
 
         present: [],
@@ -210,7 +320,10 @@ export default {
             permit: 0,
             walkout: 0,
             total: 0
-        }
+        },
+
+        expandOpen: 0,
+        expandClose: 0
     }),
 
     mounted() {
@@ -294,6 +407,49 @@ export default {
             }
         },
 
+        fetchDetail: async function(params) {
+            let participants;
+
+            switch (params) {
+                case 'present':
+                    this.detail.color = 'light-blue';  
+                    this.detail.title = 'Hadir Tepat Waktu';  
+                    participants = this.present;
+
+                    break;
+            
+                case 'late':
+                    this.detail.color = 'cyan';    
+                    this.detail.title = 'Hadir Terlambat';
+                    participants = this.late;
+
+                    break;
+                
+                case 'permit':
+                    this.detail.color = 'amber';    
+                    this.detail.title = 'Tidak Hadir Dengan Keterangan';
+                    participants = this.permit;
+
+                    break;
+                
+                case 'walkout':
+                    this.detail.color = 'deep-orange';    
+                    this.detail.title = 'Tidak Hadir Tanpa Keterangan';
+                    participants = this.walkout;
+
+                    break;
+            }
+
+            let { data } = await this.$http.post( this.urlpath + '/ceremony/' + this.event.value + '/participants', {
+                participants
+            });
+
+            this.dataTable2 = data.agencies;
+            this.holdTable3 = data.participants;
+
+            this.detail.state = true;
+        },
+
         errorHandler: function(error) {
             console.log(error);
         },
@@ -302,6 +458,30 @@ export default {
             this.$nextTick(() => {
                 this.fontLoaded = true;
             });
+        }
+    },
+
+    watch: {
+        expanded: {
+            handler: function(newValue) {
+                if (newValue && newValue.constructor === Array && newValue.length > 0) {
+                    this.dataTable3 = [];
+                    this.waitTable3 = true;
+
+                    let cloneData = Object.assign([], this.holdTable3);
+                    this.dataTable3 = this.holdTable3.reduce((current, record) => {
+                        if (record.unker === newValue[0].unker) {
+                            current.push(record);
+                        }
+
+                        return current;
+                    }, []);
+
+                    this.waitTable3 = false;
+                }
+            },
+
+            deep: true
         }
     }
 };
