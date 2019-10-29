@@ -165,7 +165,7 @@
                         </v-toolbar>
 
                         <v-list two-line subheader>
-                            <template v-for="record in dataTable2">
+                            <template v-for="(record, index) in dataTable2">
                                 <v-list-item
                                     :key="record.unker"
                                     @click="filterDetail(record.unker)"
@@ -186,7 +186,7 @@
                                     </v-list-item-action>
                                 </v-list-item>
 
-                                <v-divider :key="record.unker"></v-divider>
+                                <v-divider :key="index"></v-divider>
                             </template>
                         </v-list>
                     </v-card>
@@ -203,7 +203,7 @@
                         </v-toolbar>
 
                         <v-list three-line subheader>
-                            <template v-for="record in dataTable3">
+                            <template v-for="(record, index) in dataTable3">
                                 <v-list-item :key="record.unker">
                                     <v-list-item-avatar>
                                         <v-icon :class="detail.color + ' lighten-1 white--text'">folder</v-icon>
@@ -218,7 +218,7 @@
                                     </v-list-item-content>
                                 </v-list-item>
 
-                                <v-divider :key="record.unker"></v-divider>
+                                <v-divider :key="index"></v-divider>
                             </template>
                         </v-list>
                     </v-card>
