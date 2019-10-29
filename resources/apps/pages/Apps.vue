@@ -1,9 +1,176 @@
 <template>
     <div class="monoland" :v-cloak="!fontLoaded">
-        <v-app v-cloak>
+        <v-app v-cloak v-if="$vuetify.breakpoint.xsOnly">
+            <v-content>
+                <v-card flat>
+                    <v-toolbar color="light-blue" flat>
+                        <v-toolbar-title class="white--text">Dashboard</v-toolbar-title>
+                    </v-toolbar>
+
+                    <v-responsive :aspect-ratio="16/9" class="light-blue lighten-4">
+                        <v-card-text class="pt-0 pl-4 pr-4 pb-4" style="height: 100%;">
+                            <v-row align="center" justify="center" no-gutters style="height: 100%;">
+                                <v-col cols="12">
+                                    <div class="d-block">
+                                        <v-combobox
+                                            :items="events"
+                                            label="Pilih Event/Tanggal Apel"
+                                            v-model="event"
+                                        ></v-combobox>
+                                    </div>
+                                    
+                                    <div class="d-block">
+                                        <v-btn block rounded large color="light-blue" dark @click="fetchRecaps">proses</v-btn>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-responsive>
+
+                    <v-container class="py-0 px-4" style="margin-top: -36px;">
+                        <v-row>
+                            <!-- tepat waktu -->
+                            <v-col cols="6">
+                                <v-hover>
+                                    <template v-slot:default="{ hover }">
+                                        <v-card flat>
+                                            <v-system-bar color="light-blue">
+                                                <div class="overline px-2 white--text">hadir</div>
+                                            </v-system-bar>
+
+                                            <v-card-text class="light-blue lighten-2">
+                                                <div class="d-flex justify-center display-3 white--text">{{ count.present }}</div>
+                                            </v-card-text>
+                                            <v-card-text class="d-flex py-2 align-center light-blue lighten-3">
+                                                <div class="overline font-weight-bold text-truncate white--text">tepat waktu</div>
+                                            </v-card-text>
+
+                                            <v-fade-transition>
+                                                <v-overlay absolute color="light-blue" v-if="hover && count.total > 0">
+                                                    <v-btn color="light-blue darken-3" dark @click="fetchDetail('present')">lihat detail</v-btn>
+                                                </v-overlay>
+                                            </v-fade-transition>
+                                        </v-card>
+                                    </template>
+                                </v-hover>
+                            </v-col>
+
+                            <!-- terlambat -->
+                            <v-col cols="6">
+                                <v-hover>
+                                    <template v-slot:default="{ hover }">
+                                        <v-card flat>
+                                            <v-system-bar color="cyan">
+                                                <div class="overline px-2 white--text">hadir</div>
+                                            </v-system-bar>
+
+                                            <v-card-text class="cyan lighten-2">
+                                                <div class="d-flex justify-center display-3 white--text">{{ count.late }}</div>
+                                            </v-card-text>
+                                            <v-card-text class="d-flex py-2 align-center cyan lighten-3">
+                                                <div class="overline font-weight-bold text-truncate white--text">terlambat</div>
+                                            </v-card-text>
+
+                                            <v-fade-transition>
+                                                <v-overlay absolute color="cyan" v-if="hover && count.total > 0">
+                                                    <v-btn color="cyan darken-3" dark @click="fetchDetail('late')">lihat detail</v-btn>
+                                                </v-overlay>
+                                            </v-fade-transition>
+                                        </v-card> 
+                                    </template>
+                                </v-hover>   
+                            </v-col>
+
+                            <!-- dengan keterangan -->
+                            <v-col cols="6">
+                                <v-hover>
+                                    <template v-slot:default="{ hover }">
+                                        <v-card flat>
+                                            <v-system-bar color="amber">
+                                                <div class="overline px-2 white--text">tidak hadir</div>
+                                            </v-system-bar>
+
+                                            <v-card-text class="amber lighten-2">
+                                                <div class="d-flex justify-center display-3 white--text">{{ count.permit }}</div>
+                                            </v-card-text>
+                                            <v-card-text class="d-flex py-2 align-center amber lighten-3">
+                                                <div class="overline font-weight-bold text-truncate white--text">dengan keterangan</div>
+                                            </v-card-text>
+
+                                            <v-fade-transition>
+                                                <v-overlay absolute color="amber" v-if="hover && count.total > 0">
+                                                    <v-btn color="amber darken-3" dark @click="fetchDetail('permit')">lihat detail</v-btn>
+                                                </v-overlay>
+                                            </v-fade-transition>
+                                        </v-card>    
+                                    </template>
+                                </v-hover>
+                            </v-col>
+
+                            <!-- tanpa keterangan -->
+                            <v-col cols="6">
+                                <v-hover>
+                                    <template v-slot:default="{ hover }">
+                                        <v-card flat>
+                                            <v-system-bar color="deep-orange">
+                                                <div class="overline px-2 white--text">tidak hadir</div>
+                                            </v-system-bar>
+
+                                            <v-card-text class="deep-orange lighten-2">
+                                                <div class="d-flex justify-center display-3 white--text">{{ count.walkout }}</div>
+                                            </v-card-text>
+                                            <v-card-text class="d-flex py-2 align-center deep-orange lighten-3">
+                                                <div class="overline font-weight-bold text-truncate white--text">tanpa keterangan</div>
+                                            </v-card-text>
+
+                                            <v-fade-transition>
+                                                <v-overlay absolute color="deep-orange" v-if="hover && count.total > 0">
+                                                    <v-btn color="deep-orange darken-3" dark @click="fetchDetail('walkout')">lihat detail</v-btn>
+                                                </v-overlay>
+                                            </v-fade-transition>
+                                        </v-card>    
+                                    </template>
+                                </v-hover>
+                            </v-col>
+                        </v-row>
+
+                        <v-row>
+                            <v-col cols="12">
+                                <v-card height="100%" flat>
+                                    <v-system-bar color="cyan">
+                                        <div class="overline px-2 white--text">graphic kehadiran</div>
+                                    </v-system-bar>
+                                    <v-card-text class="cyan lighten-4" style="height: calc(100% - 24px);">
+                                        <div class="d-flex justify-center overline" v-if="dataTable1.length === 0">tidak ada data untuk di display</div>
+                                        <div class="d-flex align-center justify-center" id="graph-wrap" v-else style="position: relative; height: 100%;"></div>
+                                    </v-card-text>
+                                </v-card>    
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card>
+            </v-content>
+
+            <v-snackbar
+                :color="snackbar.mode"
+                v-model="snackbar.state"
+            >
+                {{ snackbar.message }}
+                <v-btn text @click="snackbar.state = false">close</v-btn>    
+            </v-snackbar>
+
+            <v-footer color="light-blue" padless>
+                <v-col cols="12" class="text-center">
+                    <div class="overline white--text">&copy; 2019 - BKD - Provinsi Banten</div>
+                </v-col>
+            </v-footer>
+        </v-app>
+
+        <v-app v-cloak v-else>
             <v-app-bar color="light-blue" flat app>
                 <div class="title white--text">Dashboard</div>
             </v-app-bar>
+            
             <v-content class="light-blue lighten-5">
                 <v-container>
                     <v-row>
@@ -388,11 +555,20 @@ export default {
                         wrp.appendChild(ctx);
                     
                     let txt = document.createElement('div');
-                        txt.className = 'd-flex justify-center align-center display-4 font-weight-bold';
                         txt.style.position = 'absolute';
-                        txt.style.top = 'calc(50% - 48px)';
-                        txt.style.width = '250px';
-                        txt.style.height = '96px';
+
+                        if (this.$vuetify.breakpoint.xsOnly) {
+                            txt.className = 'd-flex justify-center align-center display-2 font-weight-light';
+                            txt.style.top = 'calc(50% - 24px)';
+                            txt.style.width = '145px';
+                            txt.style.height = '48px';
+                        } else {
+                            txt.className = 'd-flex justify-center align-center display-4 font-weight-bold';
+                            txt.style.top = 'calc(50% - 48px)';
+                            txt.style.width = '250px';
+                            txt.style.height = '96px';
+                        }
+
                         txt.innerHTML = this.count.total;
                         wrp.appendChild(txt);
                     
