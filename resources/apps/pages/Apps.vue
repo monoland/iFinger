@@ -203,22 +203,24 @@
                         </v-toolbar>
 
                         <v-list three-line subheader>
-                            <template v-for="(record, index) in dataTable3">
-                                <v-list-item :key="record.unker">
+                            <v-subheader inset>{{ lists.title }}</v-subheader>
+
+                            <template v-for="(asn, idx) in dataTable3">
+                                <v-list-item :key="asn.nip">
                                     <v-list-item-avatar>
                                         <v-icon :class="detail.color + ' lighten-1 white--text'">folder</v-icon>
                                     </v-list-item-avatar>
 
                                     <v-list-item-content>
-                                        <v-list-item-title v-text="record.nama"></v-list-item-title>
+                                        <v-list-item-title v-text="asn.nama"></v-list-item-title>
                                         <v-list-item-subtitle>
-                                            <div class="d-block">{{ 'NIP : ' + record.nip }}</div>
-                                            <div class="d-block">{{ 'Eselon : ' + record.esl + ', Golongan : ' + record.gol }}</div>
+                                            <div class="d-block">{{ 'NIP : ' + asn.nip }}</div>
+                                            <div class="d-block">{{ 'Eselon : ' + asn.esl + ', Golongan : ' + asn.gol }}</div>
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
                                 </v-list-item>
 
-                                <v-divider :key="index"></v-divider>
+                                <v-divider :key="idx"></v-divider>
                             </template>
                         </v-list>
                     </v-card>
@@ -551,7 +553,8 @@ export default {
         },
 
         lists: {
-            state: false
+            state: false,
+            title: null
         },
 
         present: [],
@@ -717,6 +720,7 @@ export default {
             }, []);
 
             this.lists.state = true;
+            this.lists.title = unker;
         },
 
         errorHandler: function(error) {
