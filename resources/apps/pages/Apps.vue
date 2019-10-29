@@ -4,11 +4,11 @@
             <v-content>
                 <v-card flat>
                     <v-toolbar color="light-blue" flat>
-                        <v-toolbar-title class="white--text">Dashboard</v-toolbar-title>
+                        <v-toolbar-title class="font-weight-bold white--text">Dashboard</v-toolbar-title>
                     </v-toolbar>
 
                     <v-responsive :aspect-ratio="16/9" class="light-blue lighten-4">
-                        <v-card-text class="pt-0 pl-4 pr-4 pb-4" style="height: 100%;">
+                        <v-card-text class="pt-0 pl-4 pr-4 pb-8" style="height: 100%;">
                             <v-row align="center" justify="center" no-gutters style="height: 100%;">
                                 <v-col cols="12">
                                     <div class="d-block">
@@ -27,21 +27,22 @@
                         </v-card-text>
                     </v-responsive>
 
-                    <v-container class="py-0 px-4" style="margin-top: -36px;">
+                    <v-container class="py-0 px-4" style="margin-top: -44px;">
                         <v-row>
                             <!-- tepat waktu -->
                             <v-col cols="6">
                                 <v-hover>
                                     <template v-slot:default="{ hover }">
                                         <v-card flat>
-                                            <v-system-bar color="light-blue">
-                                                <div class="overline px-2 white--text">hadir</div>
-                                            </v-system-bar>
+                                            <v-card-text class="d-flex py-2 align-center light-blue">
+                                                <div class="overline font-weight-bold text-truncate white--text">hadir</div>
+                                            </v-card-text>
 
                                             <v-card-text class="light-blue lighten-2">
                                                 <div class="d-flex justify-center display-3 white--text">{{ count.present }}</div>
                                             </v-card-text>
-                                            <v-card-text class="d-flex py-2 align-center light-blue lighten-3">
+
+                                            <v-card-text class="d-flex py-2 align-center light-blue">
                                                 <div class="overline font-weight-bold text-truncate white--text">tepat waktu</div>
                                             </v-card-text>
 
@@ -60,14 +61,15 @@
                                 <v-hover>
                                     <template v-slot:default="{ hover }">
                                         <v-card flat>
-                                            <v-system-bar color="cyan">
-                                                <div class="overline px-2 white--text">hadir</div>
-                                            </v-system-bar>
+                                            <v-card-text class="d-flex py-2 align-center cyan">
+                                                <div class="overline font-weight-bold text-truncate white--text">hadir</div>
+                                            </v-card-text>
 
                                             <v-card-text class="cyan lighten-2">
                                                 <div class="d-flex justify-center display-3 white--text">{{ count.late }}</div>
                                             </v-card-text>
-                                            <v-card-text class="d-flex py-2 align-center cyan lighten-3">
+
+                                            <v-card-text class="d-flex py-2 align-center cyan">
                                                 <div class="overline font-weight-bold text-truncate white--text">terlambat</div>
                                             </v-card-text>
 
@@ -86,14 +88,15 @@
                                 <v-hover>
                                     <template v-slot:default="{ hover }">
                                         <v-card flat>
-                                            <v-system-bar color="amber">
-                                                <div class="overline px-2 white--text">tidak hadir</div>
-                                            </v-system-bar>
+                                            <v-card-text class="d-flex py-2 align-center amber">
+                                                <div class="overline font-weight-bold text-truncate white--text">tidak hadir</div>
+                                            </v-card-text>
 
                                             <v-card-text class="amber lighten-2">
                                                 <div class="d-flex justify-center display-3 white--text">{{ count.permit }}</div>
                                             </v-card-text>
-                                            <v-card-text class="d-flex py-2 align-center amber lighten-3">
+
+                                            <v-card-text class="d-flex py-2 align-center amber">
                                                 <div class="overline font-weight-bold text-truncate white--text">dengan keterangan</div>
                                             </v-card-text>
 
@@ -112,14 +115,15 @@
                                 <v-hover>
                                     <template v-slot:default="{ hover }">
                                         <v-card flat>
-                                            <v-system-bar color="deep-orange">
-                                                <div class="overline px-2 white--text">tidak hadir</div>
-                                            </v-system-bar>
+                                            <v-card-text class="d-flex py-2 align-center deep-orange">
+                                                <div class="overline font-weight-bold text-truncate white--text">tidak hadir</div>
+                                            </v-card-text>
 
                                             <v-card-text class="deep-orange lighten-2">
                                                 <div class="d-flex justify-center display-3 white--text">{{ count.walkout }}</div>
                                             </v-card-text>
-                                            <v-card-text class="d-flex py-2 align-center deep-orange lighten-3">
+
+                                            <v-card-text class="d-flex py-2 align-center deep-orange">
                                                 <div class="overline font-weight-bold text-truncate white--text">tanpa keterangan</div>
                                             </v-card-text>
 
@@ -149,6 +153,76 @@
                         </v-row>
                     </v-container>
                 </v-card>
+
+                <!-- detail -->
+                <v-dialog fullscreen transition="dialog-bottom-transition" v-model="detail.state">
+                    <v-card :color="detail.color + ' lighten-5'" flat>
+                        <v-toolbar :color="detail.color" flat dark>
+                            <v-btn icon>
+                                <v-icon @click="detail.state = false">close</v-icon>
+                            </v-btn>
+                            <v-toolbar-title class="white--text">{{ detail.title }}</v-toolbar-title>
+                        </v-toolbar>
+
+                        <v-list two-line subheader>
+                            <template v-for="record in dataTable2">
+                                <v-list-item
+                                    :key="record.unker"
+                                    @click="filterDetail(record.unker)"
+                                >
+                                    <v-list-item-avatar>
+                                        <v-icon :class="detail.color + ' lighten-1 white--text'">folder</v-icon>
+                                    </v-list-item-avatar>
+
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="record.unker"></v-list-item-title>
+                                        <v-list-item-subtitle v-text="'Jumlah ASN : ' + record.count"></v-list-item-subtitle>
+                                    </v-list-item-content>
+
+                                    <v-list-item-action>
+                                        <v-btn icon>
+                                            <v-icon>keyboard_arrow_right</v-icon>
+                                        </v-btn>
+                                    </v-list-item-action>
+                                </v-list-item>
+
+                                <v-divider :key="record.unker"></v-divider>
+                            </template>
+                        </v-list>
+                    </v-card>
+                </v-dialog>
+
+                <!-- list ASN -->
+                <v-dialog fullscreen transition="dialog-bottom-transition" v-model="lists.state">
+                    <v-card :color="detail.color + ' lighten-5'" flat>
+                        <v-toolbar :color="detail.color" flat dark>
+                            <v-btn icon>
+                                <v-icon @click="lists.state = false">arrow_back</v-icon>
+                            </v-btn>
+                            <v-toolbar-title class="white--text">{{ detail.title }}</v-toolbar-title>
+                        </v-toolbar>
+
+                        <v-list three-line subheader>
+                            <template v-for="record in dataTable3">
+                                <v-list-item :key="record.unker">
+                                    <v-list-item-avatar>
+                                        <v-icon :class="detail.color + ' lighten-1 white--text'">folder</v-icon>
+                                    </v-list-item-avatar>
+
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="record.nama"></v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <div class="d-block">{{ 'NIP : ' + record.nip }}</div>
+                                            <div class="d-block">{{ 'Eselon : ' + record.esl + ', Golongan : ' + record.gol }}</div>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+
+                                <v-divider :key="record.unker"></v-divider>
+                            </template>
+                        </v-list>
+                    </v-card>
+                </v-dialog>
             </v-content>
 
             <v-snackbar
@@ -476,6 +550,10 @@ export default {
             title: null
         },
 
+        lists: {
+            state: false
+        },
+
         present: [],
         late: [],
         permit: [],
@@ -558,7 +636,7 @@ export default {
                         txt.style.position = 'absolute';
 
                         if (this.$vuetify.breakpoint.xsOnly) {
-                            txt.className = 'd-flex justify-center align-center display-2 font-weight-light';
+                            txt.className = 'd-flex justify-center align-center display-2 font-weight-bold';
                             txt.style.top = 'calc(50% - 24px)';
                             txt.style.width = '145px';
                             txt.style.height = '48px';
@@ -624,6 +702,21 @@ export default {
             this.holdTable3 = data.participants;
 
             this.detail.state = true;
+        },
+
+        filterDetail: function(unker) {
+            this.dataTable3 = [];
+
+            let cloneData = Object.assign([], this.holdTable3);
+            this.dataTable3 = this.holdTable3.reduce((current, record) => {
+                if (record.unker === unker) {
+                    current.push(record);
+                }
+
+                return current;
+            }, []);
+
+            this.lists.state = true;
         },
 
         errorHandler: function(error) {
