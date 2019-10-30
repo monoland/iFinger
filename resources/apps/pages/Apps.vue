@@ -500,7 +500,7 @@
                                         <div style="margin-bottom: 72px; text-align: center;">Tanggal Cetak: {{ timing }}</div>
                                         
                                         <div id="chartImageHolder">
-                                            <div class="print-total">{{ count.total }}</div>
+                                            <div class="print-total">{{ count ? count.total : 0 }}</div>
                                             <div id="print-image"></div>
                                         </div>
                                             
