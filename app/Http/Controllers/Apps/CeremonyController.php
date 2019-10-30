@@ -70,7 +70,7 @@ class CeremonyController extends Controller
      * @param [type] $date
      * @return void
      */
-    public function participants(Request $request, $date)
+    public function participants(Request $request)
     {
         return response()->json([
             'agencies' => Ceremony::agencies($request),
@@ -78,12 +78,19 @@ class CeremonyController extends Controller
         ], 200);
     }
 
-    public function agencyRecaps($date)
+    public function agenciesReport($date)
     {
         $participants = Ceremony::mustParticipant();
 
         return response()->json([
-            'recaps' => Ceremony::recaps($participants, $date)
+            'agencies' => Ceremony::recaps($participants, $date)
+        ], 200);
+    }
+
+    public function walkoutsReport(Request $request)
+    {
+        return response()->json([
+            'walkouts' => Ceremony::employees($request)
         ], 200);
     }
 }

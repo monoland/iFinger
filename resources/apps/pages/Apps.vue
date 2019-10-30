@@ -1,5 +1,6 @@
 <template>
     <div class="monoland" :v-cloak="!fontLoaded">
+        <!-- mobile -->
         <v-app v-cloak v-if="$vuetify.breakpoint.xsOnly">
             <v-content>
                 <v-card flat>
@@ -242,9 +243,14 @@
             </v-footer>
         </v-app>
 
+        <!-- desktop -->
         <v-app v-cloak v-else>
             <v-app-bar color="light-blue" flat app>
                 <div class="title white--text">Dashboard</div>
+                <v-spacer></v-spacer>
+                <v-btn icon dark @click="printReport" v-if="dataTable1.length > 0">
+                    <v-icon>print</v-icon>
+                </v-btn>
             </v-app-bar>
             
             <v-content class="light-blue lighten-5">
@@ -423,27 +429,6 @@
                             </v-card>
                         </v-col>
                     </v-row>
-
-                    <!-- recaps -->
-                    <v-row>
-                        <v-col cols="12">
-                            <v-card flat>
-                                <v-system-bar color="cyan">
-                                    <div class="overline px-2 white--text">rekapitulasi kehadiran</div>
-                                </v-system-bar>
-                                <v-card-text class="cyan lighten-4">
-                                    <div class="d-flex justify-center overline" v-if="dataTable4.length === 0">tidak ada data untuk di display</div>
-                                    <v-data-table v-else
-                                        :headers="headTable4"
-                                        :items="dataTable4"
-                                        :footer-props="{ itemsPerPageOptions: [-1] }"
-                                        dense
-                                        hide-default-footer
-                                    ></v-data-table>
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
-                    </v-row>
                 </v-container>
 
                 <!-- detail -->
@@ -485,6 +470,172 @@
                                             </td>
                                         </template>
                                     </v-data-table>
+                                </v-card-text>
+                            </v-card>
+                        </v-container>
+                    </v-card>
+                </v-dialog>
+
+                <!-- report -->
+                <v-dialog fullscreen transition="dialog-bottom-transition" v-model="report.state">
+                    <v-card color="light-blue lighten-5" flat>
+                        <v-toolbar color="light-blue" extended flat>
+                            <v-btn icon @click="report.state = false" dark>
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </v-toolbar>
+                        <v-container class="pa-0">
+                            <v-card class="mx-auto" style="margin-top: -64px" flat>
+                                <v-toolbar color="light-blue darken-2" flat>
+                                    <v-toolbar-title class="text-uppercase white--text">cetak laporan</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-btn text @click="printPreview" dark>
+                                        cetak
+                                    </v-btn>
+                                </v-toolbar>
+                                <v-divider></v-divider>
+                                <v-card-text id="print-area">
+                                    <div class="print-page">
+                                        <div class="print-title" style="margin-top: 72px; margin-bottom: 72px;">LAPORAN KEHADIRAN APEL TANGGAL {{ event ? event.value : null }}</div>
+                                        
+                                        <div id="chartImageHolder">
+                                            <div class="print-total">{{ count.total }}</div>
+                                        </div>
+                                            
+                                        <div class="print-subtitle">REKAPITULASI KEHADIRAN</div>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th class="tbl-no">No</th>
+                                                    <th>Keterangan</th>
+                                                    <th class="tbl-right">ASN</th>
+                                                    <th class="tbl-right">%</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Hadir Tepat Waktu</td>
+                                                    <td class="tbl-right">{{ count.present }}</td>
+                                                    <td class="tbl-right">{{ count.total > 0 ? ((count.present / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Hadir Terlambat</td>
+                                                    <td class="tbl-right">{{ count.late }}</td>
+                                                    <td class="tbl-right">{{ count.total > 0 ? ((count.late / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Tidak Hadir Dengan Ijin</td>
+                                                    <td class="tbl-right">{{ count.permit }}</td>
+                                                    <td class="tbl-right">{{ count.total > 0 ? ((count.permit / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Tidak Hadir Tanpa Ijin</td>
+                                                    <td class="tbl-right">{{ count.walkout }}</td>
+                                                    <td class="tbl-right">{{ count.total > 0 ? ((count.walkout / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td colspan="2">TOTAL</td>
+                                                    <td class="tbl-right">{{ count.total }}</td>
+                                                    <td class="tbl-right">100%</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        
+                                        <div class="print-subtitle">RINCIAN TIDAK HADIR DENGAN IJIN</div>
+                                        
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th class="tbl-no">No</th>
+                                                    <th>Keterangan</th>
+                                                    <th class="tbl-right">ASN</th>
+                                                    <th class="tbl-right">%</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr v-for="(record, index) in dataTable1" :key="index">
+                                                    <td>{{ index + 1 }}</td>
+                                                    <td>{{ record.namaijin }}</td>
+                                                    <td class="tbl-right">{{ record.qty }}</td>
+                                                    <td class="tbl-right">{{ ((record.qty / count.total) * 100).toFixed(2) }}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td colspan="2">TOTAL</td>
+                                                    <td class="tbl-right">{{ count.permit }}</td>
+                                                    <td class="tbl-right">{{ count.total > 0 ? ((count.permit / count.total) * 100).toFixed(2) + '%' : '&nbsp;' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="print-page">
+                                        <div class="print-title">REKAPITULASI KEHADIRAN APEL TANGGAL {{ event ? event.value : null }}</div>
+
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th class="tbl-no">No</th>
+                                                    <th>Unit Kerja</th>
+                                                    <th>Wajib</th>
+                                                    <th class="tbl-right">Hadir</th>
+                                                    <th class="tbl-right">Terlambat</th>
+                                                    <th class="tbl-right">Ijin</th>
+                                                    <th class="tbl-right">Tanpa Ijin</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr v-for="(record, index) in dataTable4" :key="index">
+                                                    <td>{{ index + 1}}</td>
+                                                    <td>{{ record.unit_kerja }}</td>
+                                                    <td class="tbl-right">{{ record.wajib }}</td>
+                                                    <td class="tbl-right">{{ record.hadir }}</td>
+                                                    <td class="tbl-right">{{ record.telat }}</td>
+                                                    <td class="tbl-right">{{ record.ijin }}</td>
+                                                    <td class="tbl-right">{{ record.mangkir }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="print-page">
+                                        <div class="print-title">DAFTAR PEGAWAI YANG TIDAK MENGIKUTI APEL TANGGAL {{ event ? event.value : null }}</div>
+
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th class="tbl-no">No</th>
+                                                    <th>NIP</th>
+                                                    <th>Nama Lengkap</th>
+                                                    <th>Gol</th>
+                                                    <th class="tbl-esl">Esl</th>
+                                                    <th>OPD</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr v-for="(record, index) in dataTable5" :key="index">
+                                                    <td>{{ index + 1}}</td>
+                                                    <td>{{ record.nip }}</td>
+                                                    <td>{{ record.nama }}</td>
+                                                    <td>{{ record.gol }}</td>
+                                                    <td class="tbl-esl">{{ record.esl }}</td>
+                                                    <td>{{ record.unker }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </v-card-text>
                             </v-card>
                         </v-container>
@@ -562,14 +713,7 @@ export default {
         ],
 
         dataTable4: [],
-        headTable4: [
-            { text: 'Unit Kerja', value: 'unit_kerja' },
-            { text: 'Wajib', value: 'wajib', align: 'end' },
-            { text: 'Hadir', value: 'hadir', align: 'end' },
-            { text: 'Terlambat', value: 'telat', align: 'end' },
-            { text: 'Dengan Ijin', value: 'ijin', align: 'end' },
-            { text: 'Tanpa Ijin', value: 'mangkir', align: 'end' },
-        ],
+        dataTable5: [],
 
         snackbar: {
             state: false,
@@ -601,8 +745,14 @@ export default {
             total: 0
         },
 
+        report: {
+            state: false,
+        },
+
         expandOpen: 0,
-        expandClose: 0
+        expandClose: 0,
+
+        imageSrc: null
     }),
 
     mounted() {
@@ -662,6 +812,7 @@ export default {
                         wrp.innerHTML = '';
 
                     let ctx = document.createElement('canvas');
+                        ctx.setAttribute('id', 'chartCanvas');
                         ctx.setAttribute('width', wrp.offsetWidth - 24);
                         ctx.setAttribute('height', wrp.offsetWidth - 24);
                         wrp.appendChild(ctx);
@@ -762,6 +913,61 @@ export default {
             this.$nextTick(() => {
                 this.fontLoaded = true;
             });
+        },
+
+        printReport: async function(){
+            this.report.state = true;
+
+            let { data: { agencies }} = await this.$http.get(this.urlpath + '/ceremony/' + this.event.value + '/agencies');
+
+            this.dataTable4 = agencies;
+
+            let { data: { walkouts }} = await this.$http.post( this.urlpath + '/ceremony/' + this.event.value + '/walkouts', {
+                participants: this.walkout
+            });
+
+            this.dataTable5 = walkouts;
+
+            this.$nextTick(() => {
+                let canvas = document.getElementById('chartCanvas');
+                let image = new Image();
+                    image.src = canvas.toDataURL();
+
+                document.getElementById('chartImageHolder').appendChild(image);
+            });
+        },
+
+        printPreview: function() {
+            let win = window.open('', 'PRINT', 'height=600,width=800');
+                win.document.write('<html>');
+                win.document.write('<head>');
+                win.document.write('<title>Print Preview</title>');
+                win.document.write('</head>');
+                win.document.write('<body>');
+                win.document.write(document.getElementById('print-area').innerHTML);
+                win.document.write('</body>');
+                win.document.write('</html>');
+
+            let css = win.document.createElement('link');
+                css.type = 'text/css';
+                css.rel = 'stylesheet';
+                css.href = '/dashboard/styles/monoland.css?version=1'; 
+                css.media = 'all';
+                win.document.getElementsByTagName("head")[0].appendChild(css);
+
+            let prt = win.document.createElement('link');
+                prt.type = 'text/css';
+                prt.rel = 'stylesheet';
+                prt.href = '/dashboard/styles/print.css'; 
+                prt.media = 'all';
+                win.document.getElementsByTagName("head")[0].appendChild(prt);
+
+            setTimeout(() => {
+                win.document.close();
+                win.focus();
+                win.print();
+                win.close();
+            }, 500);
         }
     },
 

@@ -146,7 +146,8 @@ class Ceremony
                 JOIN ref_golruang ON peg_pakhir.kgolru = ref_golruang.kgolru
                 JOIN ref_eselon ON peg_jakhir.keselon = ref_eselon.keselon
                 JOIN ref_unkerja ON CONCAT(LEFT(peg_jakhir.kunker, 4), '00000000000') = ref_unkerja.kunker
-                WHERE peg_identpeg.nip IN ($participants)");
+                WHERE peg_identpeg.nip IN ($participants)
+                ORDER BY unker, peg_identpeg.nip");
     }
 
     /**
