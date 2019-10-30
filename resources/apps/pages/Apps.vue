@@ -936,8 +936,10 @@ export default {
                 let image = new Image();
                     image.src = canvas.toDataURL();
 
-                document.getElementById('chartImageHolder').innerHTML = '<div class="print-total">' + count.total + '</div>';
-                document.getElementById('chartImageHolder').appendChild(image);
+                let wrp = document.getElementById('chartImageHolder');
+                    wrp.innerHTML = '';
+                    wrp.appendChild('<div class="print-total">' + count.total + '</div>');
+                    wrp.appendChild(image);
             });
         },
 
