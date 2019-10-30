@@ -420,7 +420,28 @@
                                         </template>
                                     </v-data-table>
                                 </v-card-text>
-                            </v-card>    
+                            </v-card>
+                        </v-col>
+                    </v-row>
+
+                    <!-- recaps -->
+                    <v-row>
+                        <v-col cols="12">
+                            <v-card flat>
+                                <v-system-bar color="cyan">
+                                    <div class="overline px-2 white--text">rekapitulasi kehadiran</div>
+                                </v-system-bar>
+                                <v-card-text class="cyan lighten-4">
+                                    <div class="d-flex justify-center overline" v-if="dataTable4.length === 0">tidak ada data untuk di display</div>
+                                    <v-data-table v-else
+                                        :headers="headTable4"
+                                        :items="dataTable4"
+                                        :footer-props="{ itemsPerPageOptions: [-1] }"
+                                        dense
+                                        hide-default-footer
+                                    ></v-data-table>
+                                </v-card-text>
+                            </v-card>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -540,6 +561,16 @@ export default {
             { text: 'Golongan', value: 'gol', align: 'end', class: 'eselon' },
         ],
 
+        dataTable4: [],
+        headTable4: [
+            { text: 'Unit Kerja', value: 'unit_kerja' },
+            { text: 'Wajib', value: 'wajib', align: 'end' },
+            { text: 'Hadir', value: 'hadir', align: 'end' },
+            { text: 'Terlambat', value: 'telat', align: 'end' },
+            { text: 'Dengan Ijin', value: 'ijin', align: 'end' },
+            { text: 'Tanpa Ijin', value: 'mangkir', align: 'end' },
+        ],
+
         snackbar: {
             state: false,
             mode: 'error',
@@ -601,7 +632,7 @@ export default {
                     return false;
                 }
 
-                let {data: { present, late, permit, walkout }} = await this.$http.get(this.urlpath + '/ceremony/' + this.event.value + '/recaps');
+                let {data: { present, late, permit, walkout, recaps }} = await this.$http.get(this.urlpath + '/ceremony/' + this.event.value + '/recaps');
 
                 this.present = present;
                 this.late = late;
