@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Apps;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ceremony;
+use DateTime;
 use Illuminate\Http\Request;
 
 class CeremonyController extends Controller
@@ -45,6 +46,7 @@ class CeremonyController extends Controller
             $participants = Ceremony::participants($tableName, $date);
 
             return response()->json([
+                'timing' => date('Y-m-d h:i:s a'),
                 'present' => (clone $participants)->select('nip')->where('flag_apel', 1)->whereNull('tel_apel')->get(),
                 'late' => (clone $participants)->select('nip')->where('flag_apel', 1)->whereNotNull('tel_apel')->get(),
                 'walkout' => (clone $participants)->select('nip')->where('flag_apel', 0)->whereNull('stat_ijn')->get(),

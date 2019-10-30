@@ -496,7 +496,8 @@
                                 <v-divider></v-divider>
                                 <v-card-text id="print-area">
                                     <div class="print-page">
-                                        <div class="print-title" style="margin-top: 72px; margin-bottom: 72px;">LAPORAN KEHADIRAN APEL TANGGAL {{ event ? event.value : null }}</div>
+                                        <div class="print-title" style="margin-top: 72px; margin-bottom: 2px;">LAPORAN KEHADIRAN APEL TANGGAL {{ event ? event.value : null }}</div>
+                                        <div style="margin-bottom: 72px; text-align: center;">Tanggal Cetak: {{ timing }}</div>
                                         
                                         <div id="chartImageHolder">
                                             <div class="print-total">{{ count.total }}</div>
@@ -681,6 +682,7 @@ export default {
 
     data:() => ({
         event: null,
+        timing: null,
         events: [],
         fontLoaded: false,
         urlpath: '/dashboard/api',
@@ -782,12 +784,13 @@ export default {
                     return false;
                 }
 
-                let {data: { present, late, permit, walkout, recaps }} = await this.$http.get(this.urlpath + '/ceremony/' + this.event.value + '/recaps');
+                let {data: { present, late, permit, walkout, recaps, timing }} = await this.$http.get(this.urlpath + '/ceremony/' + this.event.value + '/recaps');
 
                 this.present = present;
                 this.late = late;
                 this.permit = permit.data;
                 this.walkout = walkout;
+                this.timing = timing;
 
                 this.count.present = this.present.length;
                 this.count.late = this.late.length;
@@ -933,6 +936,7 @@ export default {
                 let image = new Image();
                     image.src = canvas.toDataURL();
 
+                document.getElementById('chartImageHolder').innerHTML = '<div class="print-total">' + count.total + '</div>';
                 document.getElementById('chartImageHolder').appendChild(image);
             });
         },
