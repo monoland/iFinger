@@ -501,6 +501,7 @@
                                         
                                         <div id="chartImageHolder">
                                             <div class="print-total">{{ count.total }}</div>
+                                            <div id="print-image"></div>
                                         </div>
                                             
                                         <div class="print-subtitle">REKAPITULASI KEHADIRAN</div>
@@ -936,9 +937,8 @@ export default {
                 let image = new Image();
                     image.src = canvas.toDataURL();
 
-                let wrp = document.getElementById('chartImageHolder');
+                let wrp = document.getElementById('print-image');
                     wrp.innerHTML = '';
-                    wrp.appendChild('<div class="print-total">' + count.total + '</div>');
                     wrp.appendChild(image);
             });
         },
