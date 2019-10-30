@@ -45,6 +45,8 @@ class CeremonyController extends Controller
         if (Ceremony::isValidDate($date) && ($tableName = Ceremony::getFingerTable($date)) !== null) {
             $participants = Ceremony::participants($tableName, $date);
 
+            date_default_timezone_set('Asia/Jakarta');
+
             return response()->json([
                 'timing' => date('Y-m-d h:i:s a'),
                 'present' => (clone $participants)->select('nip')->where('flag_apel', 1)->whereNull('tel_apel')->get(),
