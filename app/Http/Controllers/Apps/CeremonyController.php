@@ -42,10 +42,10 @@ class CeremonyController extends Controller
      */
     public function recaps($date)
     {        
+        date_default_timezone_set('Asia/Jakarta');
+        
         if (Ceremony::isValidDate($date) && ($tableName = Ceremony::getFingerTable($date)) !== null) {
             $participants = Ceremony::participants($tableName, $date);
-
-            date_default_timezone_set('Asia/Jakarta');
 
             return response()->json([
                 'timing' => date('Y-m-d h:i:s a'),

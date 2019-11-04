@@ -159,6 +159,7 @@ class Ceremony
     public static function recaps($employees, $date)
     {
         $participants = "'" . implode("','", array_column($employees, 'nip')) . "'";
+        $dynamicName = "absensi_harian_" . date('Ym', strtotime($date));
         
         $recapFingers = DB::connection('finger')
             ->select("SELECT 
@@ -168,7 +169,7 @@ class Ceremony
                 COUNT(IF(flag_apel = 1 AND tel_apel IS NOT NULL, 1, NULL)) AS telat,
                 COUNT(IF(flag_apel = 0 AND stat_ijn IS NOT NULL, 1, NULL)) AS ijin,
                 COUNT(IF(flag_apel = 0 AND stat_ijn IS NULL, 1, NULL)) AS mangkir
-                FROM absensi_harian_201910 
+                FROM $dynamicName 
                 WHERE tanggal = '$date' 
                 AND nip IN ($participants)
                 GROUP BY unker");
